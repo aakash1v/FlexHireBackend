@@ -1,0 +1,37 @@
+venv/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Environments
+.env
+venv/
+env/
+
+# Django-specific files
+*.log
+local_settings.py  # Or any other local settings file not meant for production
+db.sqlite3  # If using SQLite for local development
+media/  # User-uploaded media files
+static_cdn/ # Generated static files (if collected to a separate directory)
+
+# IDE-specific files
+.idea/  # PyCharm
+.vscode/ # VS Code
+*.iml  # IntelliJ IDEA
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+.coverage
+.coverage.*
+
+# Other temporary files
+*~
+*.swp
