@@ -6,5 +6,6 @@ from . import views
 urlpatterns = [
     # Home page
     path('', views.home, name='home'),
+    path('signup/', views.signup, name='custom_signup'),  # for React
 ]
 
