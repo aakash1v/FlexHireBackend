@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 # Middleware
 # ----------------------------
 MIDDLEWARE = [
+    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -51,7 +52,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -120,14 +120,43 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # default
     "allauth.account.auth_backends.AuthenticationBackend",  # for social auth
 ]
-SITE_ID = 1
+
 
 # ----------------------------
 # Django AllAuth Configuration
 # ----------------------------
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+SITE_ID = 2
 
+# Use email for authentication instead of username
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+
+# === THIS IS THE MAIN FIX FOR YOUR ERROR ===
+# Tells allauth that username is not required
+ACCOUNT_USERNAME_REQUIRED = False
+# Tells allauth that your User model doesn't have a 'username' field
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ============================================
+
+# Set email verification (optional, mandatory, or none)
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+
+# Tell allauth to use your custom signup form (see Step 2)
+# ACCOUNT_SIGNUP_FORM_CLASS = "apps.users.forms.CustomSignupForm"
+
+# Redirects
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
+# Provider-specific settings (optional but good to have)
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
