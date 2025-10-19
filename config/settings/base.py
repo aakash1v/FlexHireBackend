@@ -29,9 +29,8 @@ INSTALLED_APPS = [
 
     # Local apps
     "apps.users",
-    # "apps.workers",
-    # "apps.bookings",
-    # "apps.chat",
+    "apps.jobs",
+    "apps.chat",
 ]
 
 # ----------------------------
