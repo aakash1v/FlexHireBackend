@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}FlexHire{% endblock %}</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-indigo-600">FlexHire</a>
+
+      <div class="space-x-4">
+        {% if user.is_authenticated %}
+          <span class="text-gray-700">Hi, {{ user.first_name|default:user.email}}</span>
+          <a href="{% url 'account_logout' %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+            Logout
+          </a>
+        {% else %}
+          <a href="{% url 'account_login' %}" class="text-gray-700 hover:text-indigo-600 font-medium">Login</a>
+          <a href="{% url 'account_signup' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+            Sign Up
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto p-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white shadow-inner mt-12 py-6 text-center text-gray-500">
+    © {{ now|date:"Y" }} FlexHire. All rights reserved.
+  </footer>
+</body>
+</html>
+

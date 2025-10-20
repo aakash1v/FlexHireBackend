@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Sign Up | FlexHire{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[80vh]">
+  <div class="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
+    <h2 class="text-3xl font-bold text-center text-indigo-600 mb-6">Create Your Account</h2>
+
+    <form method="POST" action="{% url 'account_signup' %}" class="space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {% for field in form %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+        Sign Up
+      </button>
+    </form>
+
+    <div class="mt-6 text-center text-sm text-gray-600">
+      <p>Already have an account?
+        <a href="{% url 'account_login' %}" class="text-indigo-600 hover:underline">Login</a>
+      </p>
+    </div>
+
+    <div class="mt-8 text-center">
+      <p class="text-gray-500 mb-3">Or sign up with</p>
+      {% providers_media_js %}
+      {% get_providers as socialaccount_providers %}
+      <div class="space-y-3">
+        {% for provider in socialaccount_providers %}
+          <a href="{% provider_login_url provider.id process='signup' %}"
+             class="inline-flex items-center justify-center space-x-2 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition w-full">
+            {% if provider.id == "google" %}
+              <img src="https://www.svgrepo.com/show/355037/google.svg" class="h-5 w-5" alt="Google logo">
+            {% endif %}
+            <span>Continue with {{ provider.name }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

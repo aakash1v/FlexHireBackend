@@ -1,18 +1,71 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Home</title>
-</head>
-<body>
-  <h1>Welcome, {{ user.get_full_name }}!</h1>
+{% extends "../base.html" %}
+{% block title %}Home | FlexHire{% endblock %}
+
+{% block content %}
+<div class="min-h-[85vh] flex flex-col items-center justify-center text-center px-6 bg-gradient-to-b from-indigo-50 to-white">
   {% if user.is_authenticated %}
-    <p>You are logged in.</p>
-    <a href="{% url 'account_logout' %}">Logout</a>
+    <div class="max-w-3xl">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+        Welcome back, <span class="text-indigo-600">{{ user.get_full_name|default:user.email }}</span> 👋
+      </h1>
+      <p class="text-lg text-gray-600 mb-8">
+        Manage your dashboard, check new job opportunities, or connect with local clients and workers.
+      </p>
+      <a href="/admin/" 
+         class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-xl text-lg font-medium hover:bg-indigo-700 transition shadow-md">
+        Go to Dashboard
+      </a>
+    </div>
   {% else %}
-    <p>You are not logged in.</p>
-    <a href="{% url 'account_login' %}">Login</a>
-    <a href="{% url 'account_signup' %}">Sign Up</a>
+    <div class="max-w-3xl">
+      <h1 class="text-5xl md:text-6xl font-extrabold text-gray-800 mb-6">
+        Connect. Work. Grow. <br>
+        <span class="text-indigo-600">With FlexHire</span> 🚀
+      </h1>
+      <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed">
+        FlexHire helps you find trusted local workers for your tasks — or get hired for your skills.  
+        Simple, secure, and built for your community.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="{% url 'account_signup' %}" 
+           class="bg-indigo-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition shadow-md">
+          Get Started
+        </a>
+        <a href="{% url 'account_login' %}" 
+           class="bg-white border border-gray-300 text-gray-800 px-8 py-3 rounded-xl text-lg font-semibold hover:bg-gray-100 transition shadow-sm">
+          Login
+        </a>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mt-20 grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+      <div class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition">
+        <div class="text-indigo-600 text-4xl mb-3">🧰</div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-800">For Workers</h3>
+        <p class="text-gray-600">
+          Create your free profile and get matched with customers near you who need your skills.
+        </p>
+      </div>
+
+      <div class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition">
+        <div class="text-indigo-600 text-4xl mb-3">📍</div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-800">Find Nearby Help</h3>
+        <p class="text-gray-600">
+          Whether it’s fixing, cleaning, or teaching — find reliable local workers quickly and safely.
+        </p>
+      </div>
+
+      <div class="p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition">
+        <div class="text-indigo-600 text-4xl mb-3">💼</div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-800">Grow Your Business</h3>
+        <p class="text-gray-600">
+          Build a reputation, get repeat clients, and grow your income — all on FlexHire.
+        </p>
+      </div>
+    </div>
   {% endif %}
-</body>
-</html>
+</div>
+{% endblock %}
 
