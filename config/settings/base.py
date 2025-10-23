@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "corsheaders",
-    'django_extensions',
+    "django_extensions",
+    "drf_spectacular",
 
     # Local apps
     "apps.users",
@@ -104,6 +105,15 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Flex Hire',
+    'DESCRIPTION': 'FlexHire helps you find trusted local workers for your tasks — or get hired for your skills. Simple, secure, and built for your community.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 
