@@ -2,30 +2,16 @@
 {% block title %}Home | FlexHire{% endblock %}
 
 {% block content %}
-<div class="min-h-[85vh] flex flex-col items-center justify-center text-center px-6 bg-gradient-to-b from-indigo-50 to-white">
-  {% if user.is_authenticated %}
-    <div class="max-w-3xl">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-        Welcome back, <span class="text-indigo-600">{{ user.get_full_name|default:user.email }}</span> 👋
+<div class="min-h-[85vh] flex flex-col items-center justify-center text-center px-6 b bg-violet-300 rounded-lg p-5">
+      <h1 class="tracking-widest text-xl md:text-3xl text-indigo-900 leading-relaxed underline">
+    Flex Hire Admin page
       </h1>
-      <p class="text-lg text-gray-600 mb-8">
-        Manage your dashboard, check new job opportunities, or connect with local clients and workers.
-      </p>
-      <a href="/admin/" 
-         class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-xl text-lg font-medium hover:bg-indigo-700 transition shadow-md">
-        Go to Dashboard
-      </a>
-    </div>
-  {% else %}
-    <div class="max-w-3xl">
-      <h1 class="text-5xl md:text-6xl font-extrabold text-gray-800 mb-6">
+
+    <div class="max-w-4xl">
+      <h1 class="mt-5 tracking-wider text-2xl md:text-5xl font-extrabold text-gray-800 mb-6">
         Connect. Work. Grow. <br>
         <span class="text-indigo-600">With FlexHire</span> 🚀
       </h1>
-      <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed">
-        FlexHire helps you find trusted local workers for your tasks — or get hired for your skills.  
-        Simple, secure, and built for your community.
-      </p>
 
     </div>
 
@@ -55,7 +41,6 @@
         </p>
       </div>
     </div>
-  {% endif %}
 </div>
 {% endblock %}
 
