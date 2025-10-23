@@ -21,17 +21,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",  # required by allauth ✅
 
     # Third-party
     "rest_framework",
     "corsheaders",
     'django_extensions',
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-
 
     # Local apps
     "apps.users",
@@ -43,12 +37,10 @@ INSTALLED_APPS = [
 # Middleware
 # ----------------------------
 MIDDLEWARE = [
-    "allauth.account.middleware.AccountMiddleware",
-    "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -110,7 +102,6 @@ TEMPLATES = [
 # ----------------------------
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
@@ -118,45 +109,8 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # default
-    "allauth.account.auth_backends.AuthenticationBackend",  # for social auth
 ]
 
+GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID')
+GOOGLE_OAUTH_CLIENT_SECRET = config('GOOGLE_OAUTH_CLIENT_SECRET')
 
-# ----------------------------
-# Django AllAuth Configuration
-# ----------------------------
-SITE_ID = 2
-
-# Use email for authentication instead of username
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-
-# === THIS IS THE MAIN FIX FOR YOUR ERROR ===
-# Tells allauth that username is not required
-ACCOUNT_USERNAME_REQUIRED = False
-# Tells allauth that your User model doesn't have a 'username' field
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-# ============================================
-
-# Set email verification (optional, mandatory, or none)
-ACCOUNT_EMAIL_VERIFICATION = "optional"
-
-# Tell allauth to use your custom signup form (see Step 2)
-# ACCOUNT_SIGNUP_FORM_CLASS = "apps.users.forms.CustomSignupForm"
-
-# Redirects
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/"
-
-# Provider-specific settings (optional but good to have)
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-    }
-}

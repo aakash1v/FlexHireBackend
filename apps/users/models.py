@@ -2,16 +2,23 @@ import uuid
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+REGISTRATION_CHOICES = [
+    ('email', 'Email'),
+    ('google', 'Google')
+]
 
 # -----------------------
 # Custom User Manager
 # -----------------------
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, full_name, phone, password=None, **extra_fields):
         if not email:
             raise ValueError("Email is required")
         email = self.normalize_email(email)
-        user = self.model(email=email, full_name=full_name, phone=phone, **extra_fields)
+        user = self.model(email=email, full_name=full_name,
+                          phone=phone, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -37,7 +44,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, unique=True)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="customer")
+    role = models.CharField(
+        max_length=20, choices=ROLE_CHOICES, default="customer")
+    registration_method = models.CharField(
+        max_length=20, choices=REGISTRATION_CHOICES, default='email')
+
     bio = models.TextField(blank=True)
     profile_image = models.URLField(blank=True)
     is_verified = models.BooleanField(default=False)
@@ -53,7 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return self.full_name
+        return self.email
 
 
 # -----------------------
@@ -76,12 +87,16 @@ class Location(models.Model):
 # Worker Profile
 # -----------------------
 class WorkerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="worker_profile")
-    skills = models.JSONField(default=list)  # Example: ["Painter", "Electrician"]
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="worker_profile")
+    # Example: ["Painter", "Electrician"]
+    skills = models.JSONField(default=list)
     experience_years = models.PositiveIntegerField(default=0)
-    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    hourly_rate = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
     work_radius_km = models.FloatField(default=5)
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+    location = models.ForeignKey(
+        Location, on_delete=models.SET_NULL, null=True)
     is_available = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -93,11 +108,12 @@ class WorkerProfile(models.Model):
 # Customer Profile
 # -----------------------
 class CustomerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="customer_profile")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="customer_profile")
     address = models.TextField(blank=True)
-    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True)
+    location = models.ForeignKey(
+        Location, on_delete=models.SET_NULL, null=True)
     verified_badge = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.full_name
-
