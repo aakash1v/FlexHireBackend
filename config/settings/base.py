@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 from decouple import config, Csv
 
@@ -108,6 +109,22 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+SIMPLE_JWT = {
+    # Access token valid for 30 minutes
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    # Refresh token valid for 7 days
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    # Issue new refresh token when used
+    "ROTATE_REFRESH_TOKENS": True,
+    # Invalidate old refresh tokens
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",                            # Default algorithm
+    "SIGNING_KEY": SECRET_KEY,                       # Use Django's secret key
+    # Expect "Authorization: Bearer <token>"
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Flex Hire',
     'DESCRIPTION': 'FlexHire helps you find trusted local workers for your tasks — or get hired for your skills. Simple, secure, and built for your community.',
@@ -124,3 +141,7 @@ AUTHENTICATION_BACKENDS = [
 GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID')
 GOOGLE_OAUTH_CLIENT_SECRET = config('GOOGLE_OAUTH_CLIENT_SECRET')
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://p3.project1.space",
+    "http://localhost:5173"
+]

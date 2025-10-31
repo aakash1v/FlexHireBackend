@@ -1,3 +1,5 @@
+from .models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import make_password
 from rest_framework import serializers
 
@@ -46,3 +48,35 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "email", "full_name", "phone", "role", "is_verified"]
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Extend default token serializer to include user info in response.
+    """
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Optional: Add custom claims in JWT payload if needed
+        token['email'] = user.email
+        token['role'] = user.role
+        token['full_name'] = user.full_name
+
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Add user info to response
+        data['user'] = {
+            'id': str(self.user.id),
+            'full_name': self.user.full_name,
+            'email': self.user.email,
+            'phone': self.user.phone,
+            'role': self.user.role,
+            'is_verified': self.user.is_verified,
+            'profile_image': self.user.profile_image,
+        }
+
+        return data

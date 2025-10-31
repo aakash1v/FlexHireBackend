@@ -15,6 +15,12 @@ from google.oauth2 import id_token
 
 from apps.users.models import User
 from apps.users.serializers import SignupSerializer, UserSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 def home(request):
