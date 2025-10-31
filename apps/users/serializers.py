@@ -1,9 +1,13 @@
+
+from apps.utils.email_utils import send_otp
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import make_password
 from rest_framework import serializers
 
 from apps.users.models import CustomerProfile, Location, User, WorkerProfile
+
+from apps.utils import email_utils as sm
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -15,7 +19,6 @@ class LocationSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     full_name = serializers.CharField(max_length=255)
-    phone = serializers.CharField(max_length=15)
     password = serializers.CharField(write_only=True)
     role = serializers.ChoiceField(choices=['worker', 'customer', 'both'])
     skills = serializers.ListField(
@@ -41,13 +44,14 @@ class SignupSerializer(serializers.Serializer):
         if user.role in ['customer', 'both']:
             CustomerProfile.objects.create(user=user, location=location)
 
+        send_otp(validated_data.get('email'), validated_data.get('full_name'))
         return user
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "full_name", "phone", "role", "is_verified"]
+        fields = ["id", "email", "full_name", "role", "is_verified"]
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

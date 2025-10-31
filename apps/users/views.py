@@ -1,10 +1,14 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
+from apps.utils.email_utils import send_welcome_email
+from .serializers import CustomTokenObtainPairSerializer
 
 from django.shortcuts import render
 from django.conf import settings
@@ -13,10 +17,8 @@ from drf_spectacular.utils import extend_schema
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 
-from apps.users.models import User
+from apps.users.models import EmailOTP, User
 from apps.users.serializers import SignupSerializer, UserSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -28,6 +30,9 @@ def home(request):
 
 
 class SignupView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
     @extend_schema(
         request=SignupSerializer,
         responses={201: UserSerializer},
@@ -37,6 +42,7 @@ class SignupView(APIView):
         serializer = SignupSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         return Response(UserSerializer(user).data, status=201)
 
 
@@ -85,3 +91,37 @@ def google_auth(request):
 
     except ValueError:
         return Response({"error": "Invalid token", "status": False}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def verify_otp(request):
+    email = request.data.get("email")
+    otp = request.data.get("otp")
+
+    if not email or not otp:
+        return Response({"detail": "Email and OTP required"}, status=400)
+
+    try:
+        record = EmailOTP.objects.get(email=email)
+    except EmailOTP.DoesNotExist:
+        return Response({"detail": "OTP not found. Please request a new one."}, status=400)
+
+    if record.is_expired():
+        record.delete()
+        return Response({"detail": "OTP expired. Please request a new one."}, status=400)
+
+    if record.otp != str(otp):
+        return Response({"detail": "Invalid OTP"}, status=400)
+
+    # ✅ OTP is correct → verify user
+    user = User.objects.filter(email=email).first()
+    if user:
+        user.is_verified = True
+        user.save()
+
+    # Cleanup OTP
+    record.delete()
+    send_welcome_email(email, user.full_name)
+
+    return Response({"detail": "Email verified successfully!"}, status=200)

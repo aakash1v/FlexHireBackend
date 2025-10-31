@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import User, WorkerProfile, CustomerProfile, Location
+from .models import EmailOTP, User, WorkerProfile, CustomerProfile, Location
 
 # -----------------------
 # Custom User Admin
@@ -63,4 +63,5 @@ class LocationAdmin(admin.ModelAdmin):
 # Register User
 # -----------------------
 admin.site.register(User, UserAdmin)
+admin.site.register(EmailOTP)
 

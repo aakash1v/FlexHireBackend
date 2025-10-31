@@ -145,3 +145,12 @@ CSRF_TRUSTED_ORIGINS = [
     "https://p3.project1.space",
     "http://localhost:5173"
 ]
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = config('SENDER_EMAIL')
+EMAIL_HOST_PASSWORD = config('SENDER_PASSWORD')

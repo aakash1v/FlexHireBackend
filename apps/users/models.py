@@ -1,3 +1,5 @@
+import datetime
+from django.utils import timezone
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
@@ -43,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, unique=True)
+    phone = models.CharField(max_length=15, blank=True)
     role = models.CharField(
         max_length=20, choices=ROLE_CHOICES, default="customer")
     registration_method = models.CharField(
@@ -117,3 +119,13 @@ class CustomerProfile(models.Model):
 
     def __str__(self):
         return self.user.full_name
+
+
+class EmailOTP(models.Model):
+    email = models.EmailField(unique=True)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        # Expires in 5 minutes
+        return timezone.now() > self.created_at + datetime.timedelta(minutes=5)
