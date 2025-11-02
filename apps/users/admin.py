@@ -8,7 +8,7 @@ from .models import EmailOTP, User, WorkerProfile, CustomerProfile, Location
 # -----------------------
 class UserAdmin(BaseUserAdmin):
     model = User
-    list_display = ("email", "full_name", "phone", "role", "is_verified", "is_staff", "is_active")
+    list_display = ("id", "email", "full_name", "phone", "role", "is_verified", "is_staff", "is_active")
     list_filter = ("role", "is_verified", "is_staff", "is_active")
     search_fields = ("email", "full_name", "phone")
     ordering = ("email",)

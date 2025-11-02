@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ServiceCategory, JobPost, Job
+from .models import ServiceCategory, JobPost, Job, JobApplication
 
 
 # -----------------------
@@ -28,7 +28,8 @@ class JobPostAdmin(admin.ModelAdmin):
         "status",
         "created_at",
     )
-    list_filter = ("status", "category", "food_provided", "tea_provided", "accommodation_provided", "created_at")
+    list_filter = ("status", "category", "food_provided",
+                   "tea_provided", "accommodation_provided", "created_at")
     search_fields = (
         "title",
         "description",
@@ -97,3 +98,5 @@ class JobAdmin(admin.ModelAdmin):
         ("Timestamps", {"fields": ("created_at", "updated_at")}),
     )
 
+
+admin.site.register(JobApplication)
