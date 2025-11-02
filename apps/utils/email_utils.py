@@ -28,3 +28,19 @@ def send_otp(to_email, name):
         defaults={"otp": str(otp)}
     )
     return otp
+
+def send_application_status_email(worker_email, worker_name, job_title, status):
+    """
+    Notify worker about acceptance or rejection of their application
+    """
+    if status == "accepted":
+        subject = f"Your application for '{job_title}' has been accepted!"
+        message = f"Hi {worker_name},\n\nCongratulations! Your application for the job '{job_title}' has been accepted.\nPlease contact the customer to coordinate further.\n\nBest,\nFlexHire Team"
+    elif status == "rejected":
+        subject = f"Your application for '{job_title}' has been rejected"
+        message = f"Hi {worker_name},\n\nWe regret to inform you that your application for the job '{job_title}' has been rejected.\n\nBest,\nFlexHire Team"
+    else:
+        return  # Invalid status, do nothing
+
+    from_email = settings.EMAIL_HOST_USER
+    send_mail(subject, message, from_email, [worker_email], fail_silently=False)

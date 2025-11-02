@@ -87,3 +87,29 @@ class JobPost(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.category})"
+
+
+class JobApplication(models.Model):
+    job_post = models.ForeignKey(
+        JobPost, on_delete=models.CASCADE, related_name="applications"
+    )
+    worker = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="job_applications"
+    )
+    message = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("accepted", "Accepted"),
+            ("rejected", "Rejected"),
+        ],
+        default="pending",
+    )
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('job_post', 'worker')  # prevent multiple applications
+
+    def __str__(self):
+        return f"{self.worker} → {self.job_post.title} ({self.status})"

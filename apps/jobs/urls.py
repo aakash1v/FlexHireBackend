@@ -16,4 +16,9 @@ urlpatterns = [
     path("jobs/", views.JobListCreateView.as_view(), name="job-list-create"),
     path("jobs/<int:pk>/", views.JobRetrieveUpdateDestroyView.as_view(),
          name="job-detail"),
+
+    #application
+    path('applications/', views.JobApplicationListCreateView.as_view(), name='application-list-create'),
+    path('applications/<int:pk>/', views.JobApplicationUpdateView.as_view(), name='application-update'),
+    path("my-job-applications/", views.MyJobApplicationsView.as_view(), name="my-job-applications"),
 ]

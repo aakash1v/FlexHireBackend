@@ -1,3 +1,4 @@
+from .models import JobApplication, Job
 from rest_framework import serializers
 from .models import ServiceCategory, JobPost, Job
 
@@ -75,3 +76,32 @@ class JobSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
+
+
+# serializers.py
+
+
+class JobApplicationSerializer(serializers.ModelSerializer):
+    worker_name = serializers.CharField(
+        source='worker.full_name', read_only=True)
+    job_post_title = serializers.CharField(
+        source='job_post.title', read_only=True)
+
+    class Meta:
+        model = JobApplication
+        fields = [
+            'id',
+            'job_post',
+            'worker',
+            'worker_name',
+            'job_post_title',
+            'message',
+            'status',
+            'applied_at',
+        ]
+        read_only_fields = ['status', 'worker']
+
+    def create(self, validated_data):
+        request = self.context['request']
+        validated_data['worker'] = request.user
+        return super().create(validated_data)
