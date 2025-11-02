@@ -1,3 +1,8 @@
+from rest_framework import generics, permissions, status
+from .serializers import UserSerializer, UserUpdateSerializer
+from .models import User
+from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -125,3 +130,56 @@ def verify_otp(request):
     send_welcome_email(email, user.full_name)
 
     return Response({"detail": "Email verified successfully!"}, status=200)
+
+
+class MeView(generics.RetrieveUpdateAPIView):
+    """
+    GET: Get my profile
+    PUT: Update my profile
+    """
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def put(self, request, *args, **kwargs):
+        serializer = UserUpdateSerializer(
+            self.get_object(), data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(UserSerializer(self.get_object()).data)
+
+
+class UploadProfilePhotoView(generics.GenericAPIView):
+    """
+    POST: Upload or update profile picture
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        profile_image = request.FILES.get("profile_image")
+
+        if not profile_image:
+            return Response({"error": "No profile_image file provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save file to user's profile_image field
+        user.profile_image = profile_image
+        user.save()
+
+        return Response({
+            "message": "Profile picture uploaded successfully",
+            "profile_image_url": request.build_absolute_uri(user.profile_image.url)
+        }, status=status.HTTP_200_OK)
+
+
+class PublicUserView(generics.RetrieveAPIView):
+    """
+    GET: View another user's public profile
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = "id"

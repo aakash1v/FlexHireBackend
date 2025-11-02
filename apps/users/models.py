@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=20, choices=REGISTRATION_CHOICES, default='email')
 
     bio = models.TextField(blank=True)
-    profile_image = models.URLField(blank=True)
+    profile_image = models.ImageField(upload_to="profiles/", blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     avg_rating = models.FloatField(default=0.0)
     is_active = models.BooleanField(default=True)

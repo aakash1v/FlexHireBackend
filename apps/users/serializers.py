@@ -1,4 +1,5 @@
 
+from apps.users.models import User, WorkerProfile, CustomerProfile, Location
 from apps.utils.email_utils import send_otp
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -80,7 +81,51 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'phone': self.user.phone,
             'role': self.user.role,
             'is_verified': self.user.is_verified,
-            'profile_image': self.user.profile_image,
+            'profile_image': self.user.profile_image if self.user.profile_image else None,
         }
 
         return data
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ['city', 'district', 'state', 'pincode', 'lat', 'long']
+
+
+class WorkerProfileSerializer(serializers.ModelSerializer):
+    location = LocationSerializer()
+
+    class Meta:
+        model = WorkerProfile
+        fields = ['skills', 'experience_years', 'hourly_rate',
+                  'work_radius_km', 'is_available', 'location']
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    location = LocationSerializer()
+
+    class Meta:
+        model = CustomerProfile
+        fields = ['address', 'verified_badge', 'location']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    worker_profile = WorkerProfileSerializer(read_only=True)
+    customer_profile = CustomerProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'full_name', 'email', 'phone', 'role', 'bio', 'profile_image',
+            'is_verified', 'avg_rating', 'registration_method',
+            'worker_profile', 'customer_profile', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['email', 'registration_method',
+                            'created_at', 'updated_at']
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['full_name', 'phone', 'bio', 'profile_image']
