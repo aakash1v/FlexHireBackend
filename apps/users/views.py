@@ -1,9 +1,9 @@
 from rest_framework import generics, permissions, status
-from .serializers import UserSerializer, UserUpdateSerializer
+from .serializers import UserProfileSerializer, UserSerializer, UserUpdateSerializer
 from .models import User
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from apps.utils.email_utils import send_welcome_email
+from apps.utils.email_utils import send_otp, send_welcome_email
 from .serializers import CustomTokenObtainPairSerializer
 
 from django.shortcuts import render
@@ -101,6 +101,8 @@ def google_auth(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def verify_otp(request):
+    authentication_classes = []
+
     email = request.data.get("email")
     otp = request.data.get("otp")
 
@@ -132,23 +134,56 @@ def verify_otp(request):
     return Response({"detail": "Email verified successfully!"}, status=200)
 
 
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def resend_otp(request):
+    """
+    Resend OTP to user's email if previous OTP expired or user requests new one
+    """
+    email = request.data.get("email")
+
+    if not email:
+        return Response({"detail": "Email is required"}, status=400)
+
+    # Check if user exists
+    user = User.objects.filter(email=email).first()
+    if not user:
+        return Response({"detail": "No account found with this email"}, status=400)
+
+    # Delete any existing OTP for this email (optional but cleaner)
+    EmailOTP.objects.filter(email=email).delete()
+
+    # Send new OTP
+    send_otp(email, user.full_name)
+
+    return Response({"detail": "A new OTP has been sent to your email."}, status=200)
+
+
 class MeView(generics.RetrieveUpdateAPIView):
     """
-    GET: Get my profile
-    PUT: Update my profile
+    GET: Return the full profile of the authenticated user (with nested details)
+    PUT/PATCH: Update basic profile fields (full_name, phone, bio, profile_image)
     """
-    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         return self.request.user
 
+    def get_serializer_class(self):
+        # GET → full nested profile
+        if self.request.method == "GET":
+            return UserProfileSerializer
+        # PUT/PATCH → update limited fields
+        return UserUpdateSerializer
+
     def put(self, request, *args, **kwargs):
-        serializer = UserUpdateSerializer(
+        serializer = self.get_serializer(
             self.get_object(), data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(UserSerializer(self.get_object()).data)
+        return Response(UserProfileSerializer(self.get_object()).data)
+
+    patch = put  # optional shortcut for PATCH requests
 
 
 class UploadProfilePhotoView(generics.GenericAPIView):

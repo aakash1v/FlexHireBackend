@@ -104,6 +104,17 @@ class JobPostListCreateView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticated()]
 
 
+class MyJobPostsView(generics.ListAPIView):
+    """
+    List all job posts created by the authenticated user
+    """
+    serializer_class = JobPostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return JobPost.objects.filter(customer=self.request.user).order_by("-created_at")
+
+
 class JobPostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobPost.objects.all()
     serializer_class = JobPostSerializer

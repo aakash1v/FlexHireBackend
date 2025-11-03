@@ -11,6 +11,7 @@ urlpatterns = [
          name="jobpost-list-create"),
     path("posts/<int:pk>/", views.JobPostRetrieveUpdateDestroyView.as_view(),
          name="jobpost-detail"),
+    path("posts/my/", views.MyJobPostsView.as_view(), name="my-jobposts"),
 
     # Jobs (confirmed bookings)
     path("jobs/", views.JobListCreateView.as_view(), name="job-list-create"),
