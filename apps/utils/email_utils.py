@@ -30,7 +30,16 @@ def send_otp(to_email, name):
 
 def send_application_status_email(worker_email, worker_name, job_title, status):
     """
-    Notify worker about acceptance or rejection of their application
+    Notify a worker about acceptance or rejection of their job application.
+
+    Args:
+        worker_email (str): Email address of the worker.
+        worker_name (str): Full name of the worker.
+        job_title (str): Title of the job the worker applied for.
+        status (str): One of 'accepted' or 'rejected'.
+
+    Returns:
+        None
     """
     if status == "accepted":
         subject = f"Your application for '{job_title}' has been accepted!"
