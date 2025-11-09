@@ -8,37 +8,81 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('jobs', '0001_initial'),
+        ("jobs", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='JobPost',
+            name="JobPost",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=150)),
-                ('description', models.TextField()),
-                ('location', models.CharField(max_length=255)),
-                ('work_days', models.CharField(blank=True, max_length=100)),
-                ('work_hours', models.CharField(blank=True, max_length=100)),
-                ('num_workers_required', models.PositiveIntegerField(default=1)),
-                ('pay_rate', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('start_date', models.DateField(blank=True, null=True)),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('food_provided', models.BooleanField(default=False)),
-                ('tea_provided', models.BooleanField(default=False)),
-                ('accommodation_provided', models.BooleanField(default=False)),
-                ('status', models.CharField(choices=[('open', 'Open'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], default='open', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='job_posts', to='jobs.servicecategory')),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posted_jobs', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=150)),
+                ("description", models.TextField()),
+                ("location", models.CharField(max_length=255)),
+                ("work_days", models.CharField(blank=True, max_length=100)),
+                ("work_hours", models.CharField(blank=True, max_length=100)),
+                ("num_workers_required", models.PositiveIntegerField(default=1)),
+                (
+                    "pay_rate",
+                    models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True),
+                ),
+                ("start_date", models.DateField(blank=True, null=True)),
+                ("end_date", models.DateField(blank=True, null=True)),
+                ("food_provided", models.BooleanField(default=False)),
+                ("tea_provided", models.BooleanField(default=False)),
+                ("accommodation_provided", models.BooleanField(default=False)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("open", "Open"),
+                            ("in_progress", "In Progress"),
+                            ("completed", "Completed"),
+                            ("cancelled", "Cancelled"),
+                        ],
+                        default="open",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="job_posts",
+                        to="jobs.servicecategory",
+                    ),
+                ),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="posted_jobs",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='job',
-            name='post',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='jobs', to='jobs.jobpost'),
+            model_name="job",
+            name="post",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="jobs",
+                to="jobs.jobpost",
+            ),
         ),
     ]

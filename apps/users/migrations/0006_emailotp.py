@@ -6,17 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0005_alter_user_phone'),
+        ("users", "0005_alter_user_phone"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EmailOTP',
+            name="EmailOTP",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254, unique=True)),
-                ('otp', models.CharField(max_length=6)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("email", models.EmailField(max_length=254, unique=True)),
+                ("otp", models.CharField(max_length=6)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
     ]

@@ -1,8 +1,11 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+
 from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
+
 from apps.jobs.models import Job
+
 from .models import Message
 
 User = get_user_model()
@@ -45,4 +48,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
         receiver = User.objects.get(id=receiver_id)
         job = Job.objects.get(id=self.job_id)
         return Message.objects.create(job=job, sender=sender, receiver=receiver, text=message)
-

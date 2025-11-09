@@ -1,31 +1,69 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import EmailOTP, User, WorkerProfile, CustomerProfile, Location
+
+from .models import CustomerProfile, EmailOTP, Location, User, WorkerProfile
+
 
 # -----------------------
 # Custom User Admin
 # -----------------------
 class UserAdmin(BaseUserAdmin):
     model = User
-    list_display = ("id", "email", "full_name", "phone", "role", "is_verified", "is_staff", "is_active")
+    list_display = (
+        "id",
+        "email",
+        "full_name",
+        "phone",
+        "role",
+        "is_verified",
+        "is_staff",
+        "is_active",
+    )
     list_filter = ("role", "is_verified", "is_staff", "is_active")
     search_fields = ("email", "full_name", "phone")
     ordering = ("email",)
     readonly_fields = ("created_at", "updated_at")
-    
+
     fieldsets = (
         (None, {"fields": ("email", "full_name", "phone", "password")}),
-        (_("Personal info"), {"fields": ("role", "bio", "profile_image", "avg_rating", "is_verified")}),
-        (_("Permissions"), {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
+        (
+            _("Personal info"),
+            {"fields": ("role", "bio", "profile_image", "avg_rating", "is_verified")},
+        ),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
         (_("Important dates"), {"fields": ("last_login", "created_at", "updated_at")}),
     )
-    
+
     add_fieldsets = (
-        (None, {
-            "classes": ("wide",),
-            "fields": ("email", "full_name", "phone", "password1", "password2", "role", "is_active", "is_staff", "is_superuser"),
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "email",
+                    "full_name",
+                    "phone",
+                    "password1",
+                    "password2",
+                    "role",
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                ),
+            },
+        ),
     )
 
 
@@ -34,7 +72,14 @@ class UserAdmin(BaseUserAdmin):
 # -----------------------
 @admin.register(WorkerProfile)
 class WorkerProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "experience_years", "hourly_rate", "work_radius_km", "is_available", "location")
+    list_display = (
+        "user",
+        "experience_years",
+        "hourly_rate",
+        "work_radius_km",
+        "is_available",
+        "location",
+    )
     list_filter = ("is_available", "skills")
     search_fields = ("user__full_name", "user__email")
     readonly_fields = ("updated_at",)
@@ -64,4 +109,3 @@ class LocationAdmin(admin.ModelAdmin):
 # -----------------------
 admin.site.register(User, UserAdmin)
 admin.site.register(EmailOTP)
-

@@ -1,13 +1,12 @@
-from apps.utils.email_utils import send_application_status_email
-from rest_framework import generics, permissions, filters
-from .models import ServiceCategory, JobPost, Job
-from .serializers import ServiceCategorySerializer, JobPostSerializer, JobSerializer
-# views.py
-from .models import JobApplication
-from .serializers import JobApplicationSerializer
+from rest_framework import filters, generics, permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
-from rest_framework import status
+
+from apps.utils.email_utils import send_application_status_email
+
+# views.py
+from .models import Job, JobApplication, JobPost, ServiceCategory
+from .serializers import JobApplicationSerializer, JobPostSerializer, JobSerializer, ServiceCategorySerializer
 
 
 class JobApplicationListCreateView(generics.ListCreateAPIView):
@@ -15,13 +14,14 @@ class JobApplicationListCreateView(generics.ListCreateAPIView):
     GET: List all applications (for logged-in worker)
     POST: Apply to a job post
     """
+
     queryset = JobApplication.objects.all()
     serializer_class = JobApplicationSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        if hasattr(user, 'is_staff') and user.is_staff:
+        if hasattr(user, "is_staff") and user.is_staff:
             return JobApplication.objects.all()
         return JobApplication.objects.filter(worker=user)
 
@@ -47,12 +47,11 @@ class JobApplicationUpdateView(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         app = self.get_object()
         if app.job_post.customer != request.user:
-            raise PermissionDenied(
-                "You are not allowed to update this application.")
+            raise PermissionDenied("You are not allowed to update this application.")
 
-        status_choice = request.data.get('status')
-        if status_choice not in ['accepted', 'rejected']:
-            return Response({'error': 'Invalid status'}, status=status.HTTP_400_BAD_REQUEST)
+        status_choice = request.data.get("status")
+        if status_choice not in ["accepted", "rejected"]:
+            return Response({"error": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
 
         app.status = status_choice
         app.save()
@@ -62,11 +61,11 @@ class JobApplicationUpdateView(generics.UpdateAPIView):
             worker_email=app.worker.email,
             worker_name=app.worker.full_name,
             job_title=app.job_post.title,
-            status=status_choice
+            status=status_choice,
         )
 
         # If accepted, create Job automatically
-        if status_choice == 'accepted':
+        if status_choice == "accepted":
             Job.objects.create(
                 post=app.job_post,
                 customer=app.job_post.customer,
@@ -74,7 +73,7 @@ class JobApplicationUpdateView(generics.UpdateAPIView):
                 category=app.job_post.category,
                 description=app.job_post.description,
                 price=app.job_post.pay_rate,
-                status='accepted'
+                status="accepted",
             )
 
         return Response(JobApplicationSerializer(app).data)
@@ -108,6 +107,7 @@ class MyJobPostsView(generics.ListAPIView):
     """
     List all job posts created by the authenticated user
     """
+
     serializer_class = JobPostSerializer
     permission_classes = [permissions.IsAuthenticated]
 

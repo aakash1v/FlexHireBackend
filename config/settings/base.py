@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
-from decouple import config, Csv
+
+from decouple import Csv, config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -22,14 +23,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     # Third-party
     "rest_framework",
     "corsheaders",
     "django_extensions",
     "drf_spectacular",
-    'channels',
-
+    "channels",
     # Local apps
     "apps.users",
     "apps.jobs",
@@ -116,7 +115,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -128,18 +127,18 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     # Invalidate old refresh tokens
     "BLACKLIST_AFTER_ROTATION": True,
-    "ALGORITHM": "HS256",                            # Default algorithm
-    "SIGNING_KEY": SECRET_KEY,                       # Use Django's secret key
+    "ALGORITHM": "HS256",  # Default algorithm
+    "SIGNING_KEY": SECRET_KEY,  # Use Django's secret key
     # Expect "Authorization: Bearer <token>"
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Flex Hire',
-    'DESCRIPTION': 'FlexHire helps you find trusted local workers for your tasks — or get hired for your skills. Simple, secure, and built for your community.',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "Flex Hire",
+    "DESCRIPTION": "FlexHire helps you find trusted local workers for your tasks — or get hired for your skills. Simple, secure, and built for your community.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
 }
 
@@ -148,13 +147,10 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # default
 ]
 
-GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID')
-GOOGLE_OAUTH_CLIENT_SECRET = config('GOOGLE_OAUTH_CLIENT_SECRET')
+GOOGLE_OAUTH_CLIENT_ID = config("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_OAUTH_CLIENT_SECRET = config("GOOGLE_OAUTH_CLIENT_SECRET")
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://p3.project1.space",
-    "http://localhost:5173"
-]
+CSRF_TRUSTED_ORIGINS = ["https://p3.project1.space", "http://localhost:5173"]
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -162,5 +158,5 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = config('SENDER_EMAIL')
-EMAIL_HOST_PASSWORD = config('SENDER_PASSWORD')
+EMAIL_HOST_USER = config("SENDER_EMAIL")
+EMAIL_HOST_PASSWORD = config("SENDER_PASSWORD")

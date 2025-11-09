@@ -1,6 +1,6 @@
-from .models import JobApplication, Job
 from rest_framework import serializers
-from .models import ServiceCategory, JobPost, Job
+
+from .models import Job, JobApplication, JobPost, ServiceCategory
 
 
 class ServiceCategorySerializer(serializers.ModelSerializer):
@@ -10,10 +10,8 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 
 
 class JobPostSerializer(serializers.ModelSerializer):
-    customer_name = serializers.CharField(
-        source="customer.username", read_only=True)
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
+    customer_name = serializers.CharField(source="customer.username", read_only=True)
+    category_name = serializers.CharField(source="category.name", read_only=True)
 
     class Meta:
         model = JobPost
@@ -49,12 +47,9 @@ class JobPostSerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
-    customer_name = serializers.CharField(
-        source="customer.username", read_only=True)
-    worker_name = serializers.CharField(
-        source="worker.username", read_only=True)
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
+    customer_name = serializers.CharField(source="customer.username", read_only=True)
+    worker_name = serializers.CharField(source="worker.username", read_only=True)
+    category_name = serializers.CharField(source="category.name", read_only=True)
     post_title = serializers.CharField(source="post.title", read_only=True)
 
     class Meta:
@@ -82,26 +77,24 @@ class JobSerializer(serializers.ModelSerializer):
 
 
 class JobApplicationSerializer(serializers.ModelSerializer):
-    worker_name = serializers.CharField(
-        source='worker.full_name', read_only=True)
-    job_post_title = serializers.CharField(
-        source='job_post.title', read_only=True)
+    worker_name = serializers.CharField(source="worker.full_name", read_only=True)
+    job_post_title = serializers.CharField(source="job_post.title", read_only=True)
 
     class Meta:
         model = JobApplication
         fields = [
-            'id',
-            'job_post',
-            'worker',
-            'worker_name',
-            'job_post_title',
-            'message',
-            'status',
-            'applied_at',
+            "id",
+            "job_post",
+            "worker",
+            "worker_name",
+            "job_post_title",
+            "message",
+            "status",
+            "applied_at",
         ]
-        read_only_fields = ['status', 'worker']
+        read_only_fields = ["status", "worker"]
 
     def create(self, validated_data):
-        request = self.context['request']
-        validated_data['worker'] = request.user
+        request = self.context["request"]
+        validated_data["worker"] = request.user
         return super().create(validated_data)

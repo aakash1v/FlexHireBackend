@@ -1,7 +1,9 @@
 import random
-from apps.users.models import EmailOTP
-from django.core.mail import send_mail
+
 from django.conf import settings
+from django.core.mail import send_mail
+
+from apps.users.models import EmailOTP
 
 
 def send_welcome_email(to_email, name):
@@ -10,8 +12,7 @@ def send_welcome_email(to_email, name):
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [to_email]
 
-    send_mail(subject, message, from_email,
-              recipient_list, fail_silently=False)
+    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
 
 def send_otp(to_email, name):
@@ -23,11 +24,9 @@ def send_otp(to_email, name):
     send_mail(subject, message, from_email, [to_email], fail_silently=False)
 
     # Save or update OTP record
-    EmailOTP.objects.update_or_create(
-        email=to_email,
-        defaults={"otp": str(otp)}
-    )
+    EmailOTP.objects.update_or_create(email=to_email, defaults={"otp": str(otp)})
     return otp
+
 
 def send_application_status_email(worker_email, worker_name, job_title, status):
     """
@@ -35,10 +34,17 @@ def send_application_status_email(worker_email, worker_name, job_title, status):
     """
     if status == "accepted":
         subject = f"Your application for '{job_title}' has been accepted!"
-        message = f"Hi {worker_name},\n\nCongratulations! Your application for the job '{job_title}' has been accepted.\nPlease contact the customer to coordinate further.\n\nBest,\nFlexHire Team"
+        message = (
+            f"Hi {worker_name},\n\n"
+            f"Congratulations! Your application for the job '{job_title}' has been accepted.\n"
+            "Please contact the customer to coordinate further.\n\n"
+            "Best,\nFlexHire Team"
+        )
     elif status == "rejected":
         subject = f"Your application for '{job_title}' has been rejected"
-        message = f"Hi {worker_name},\n\nWe regret to inform you that your application for the job '{job_title}' has been rejected.\n\nBest,\nFlexHire Team"
+        message = (
+            f"Hi {worker_name},\n\n" f"We regret to inform you that your application for the job '{job_title}' has been rejected.\n\n" "Best,\nFlexHire Team"
+        )
     else:
         return  # Invalid status, do nothing
 

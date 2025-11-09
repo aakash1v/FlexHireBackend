@@ -1,5 +1,5 @@
 from .base import *
-DEBUG = False 
 
-print('Production Settings >> \n')
+DEBUG = False
 
+print("Production Settings >> \n")

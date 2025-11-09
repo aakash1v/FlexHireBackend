@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import ServiceCategory, JobPost, Job, JobApplication
+
+from .models import Job, JobApplication, JobPost, ServiceCategory
 
 
 # -----------------------
@@ -28,8 +29,14 @@ class JobPostAdmin(admin.ModelAdmin):
         "status",
         "created_at",
     )
-    list_filter = ("status", "category", "food_provided",
-                   "tea_provided", "accommodation_provided", "created_at")
+    list_filter = (
+        "status",
+        "category",
+        "food_provided",
+        "tea_provided",
+        "accommodation_provided",
+        "created_at",
+    )
     search_fields = (
         "title",
         "description",
@@ -42,26 +49,31 @@ class JobPostAdmin(admin.ModelAdmin):
     list_per_page = 20
 
     fieldsets = (
-        ("Basic Info", {
-            "fields": ("customer", "category", "title", "description", "location")
-        }),
-        ("Work Details", {
-            "fields": (
-                "work_days",
-                "work_hours",
-                "num_workers_required",
-                "pay_rate",
-                "start_date",
-                "end_date",
-            )
-        }),
-        ("Perks & Offerings", {
-            "fields": ("food_provided", "tea_provided", "accommodation_provided"),
-            "classes": ("collapse",)
-        }),
-        ("Status & Timestamps", {
-            "fields": ("status", "created_at", "updated_at")
-        }),
+        (
+            "Basic Info",
+            {"fields": ("customer", "category", "title", "description", "location")},
+        ),
+        (
+            "Work Details",
+            {
+                "fields": (
+                    "work_days",
+                    "work_hours",
+                    "num_workers_required",
+                    "pay_rate",
+                    "start_date",
+                    "end_date",
+                )
+            },
+        ),
+        (
+            "Perks & Offerings",
+            {
+                "fields": ("food_provided", "tea_provided", "accommodation_provided"),
+                "classes": ("collapse",),
+            },
+        ),
+        ("Status & Timestamps", {"fields": ("status", "created_at", "updated_at")}),
     )
 
 

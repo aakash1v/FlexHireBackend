@@ -1,5 +1,6 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 from apps.jobs.models import Job
 
 User = settings.AUTH_USER_MODEL
@@ -15,4 +16,3 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender} to {self.receiver} ({self.timestamp})"
-
