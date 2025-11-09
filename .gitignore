@@ -36,3 +36,5 @@ Thumbs.db
 # Other temporary files
 *~
 *.swp
+# MkDocs build output
+site/
