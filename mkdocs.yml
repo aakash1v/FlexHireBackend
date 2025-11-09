@@ -1,0 +1,48 @@
+site_name: FlexHire Backend Docs
+site_description: Developer documentation for the FlexHire Django backend.
+theme:
+  name: material
+  features:
+    - navigation.expand
+    - navigation.instant
+    - search.suggest
+    - content.code.annotate
+    - content.action.edit
+  palette:
+    - scheme: default
+      primary: blue
+      accent: teal
+    - scheme: slate
+      primary: blue
+      accent: cyan
+
+nav:
+  - Overview: index.md
+  - Setup Guide: setup.md
+  - Architecture: architecture.md
+  - Developer:
+      - Models: developer/models.md
+      - Utils: developer/utils.md
+  - API Reference:
+      - Users: api/users.md
+      - Jobs: api/jobs.md
+      - Chat: api/chat.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["."]
+          options:
+            show_source: false
+            docstring_style: google
