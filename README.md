@@ -31,6 +31,7 @@ This includes setup instructions, API reference, and architecture overview.
 ---
 
 ## 🏗️ Project Structure
+```text
 back/
 ├── apps/
 │ ├── users/ # Authentication & user profiles
@@ -41,6 +42,8 @@ back/
 ├── templates/ # HTML templates
 ├── static/ # Static assets
 └── docs/ # Documentation markdowns (MkDocs)
+
+```
 
 ---
 
@@ -65,17 +68,15 @@ back/
     python mange.py migrate
     python mange.py runserver
     ```
+
 ## 🧠 Developer Tools
 
-Pre-commit hooks: automatic linting and formatting
+- 🧹 **Pre-commit hooks:** Automatically formats and lint-checks code before commits
+- 🎨 **Code Formatter:** [Black](https://github.com/psf/black) + [isort](https://github.com/PyCQA/isort)
+- 🔍 **Linter:** [Flake8](https://github.com/PyCQA/flake8)
+- 📘 **Docs Generator:** [MkDocs](https://www.mkdocs.org/) + [mkdocstrings](https://mkdocstrings.github.io/)
+- 🧰 **Version Control:** [Git](https://git-scm.com/) + [GitHub](https://github.com/)
 
-Code Formatter: Black + isort
-
-Linter: Flake8
-
-Docs Generator: MkDocs + mkdocstrings
-
-Version Control: Git + github
 
 ## 🧰 Environment Variables
 Create a .env file in your root directory:
